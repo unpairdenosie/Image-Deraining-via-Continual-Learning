@@ -44,13 +44,6 @@ def main():
         if not os.path.exists(savepath):
             os.makedirs(savepath)
 
-#    if opt.resume:
-#        if not os.path.exists(os.path.join(opt.checkpoints_dir, opt.prefix + 'Prenet_fcheck')):
-#            os.makedirs(os.path.join(opt.checkpoints_dir, opt.prefix + 'Prenet_fcheck'))
-#        writer = SummaryWriter(os.path.join(opt.checkpoints_dir, opt.prefix + 'Prenet_fcheck'))
-#        dataset_test = Dataset(data_path="/gdata/xiaojie/Prenet_Dataset/train/RainTrainH", prefix=opt.prefix)
-#        loader_test = DataLoader(dataset=dataset_test, num_workers=1, batch_size=opt.batch_size, shuffle=False)
-
     print('Loading dataset ...\n')
     dataset_train = Dataset(data_path=opt.data_path)
     loader_train = DataLoader(dataset=dataset_train, num_workers=2, batch_size=opt.batch_size, shuffle=True)
@@ -74,13 +67,6 @@ def main():
     optimizer = optim.Adam(model.parameters(), lr=opt.lr)
     scheduler = MultiStepLR(optimizer, milestones=opt.milestone, gamma=0.2)  # learning rates
 
-    # record training
-
-    # load the lastest model
-#    initial_epoch = findLastCheckpoint(save_dir=opt.save_path)
-#    if initial_epoch > 0:
-#        print('resuming by loading epoch %d' % initial_epoch)
-#       model.load_state_dict(torch.load(os.path.join(opt.save_path, 'net_epoch%d.pth' % initial_epoch)))
 
     def compute_M(x, batch_num):
         Target_zeros = torch.zeros(x.size())
@@ -160,29 +146,8 @@ def main():
             loss.backward()
             optimizer.step()
 
-#            if step % 40 == 0:
-                # Log the scalar values
-#                print('step: %d ,loss %.3f' %(step, loss.data.cpu().numpy().item()))
-#                if opt.resume:
-#                    with torch.no_grad():
-#                        t_loss = 0.0
-#                        t_step=0
-#                        for input_test, target_test in loader_test:
-#                            model.eval()
-#                            t_step+=1
-#                            input_test, target_test = Variable(input_test), Variable(target_test)
-#                            if opt.use_gpu:
-#                                input_test, target_test = input_test.to(device), target_test.to(device)
-#                            out_test, _ = model(input_test)
-#                            pixel_metric = criterion(target_test, out_test)
-#                            iloss = -pixel_metric
-#                            t_loss += iloss.data.cpu().numpy().item()
-#                            if t_step == 20:
-#                                break
-#                        writer.add_scalar('Rain100H/Train_loss', t_loss/t_step, step)
             step += 1
             batch_num += 1
-        # save model
         scheduler.step(epoch)
         torch.save(model.state_dict(), os.path.join(savepath, 'net_latest.pth'))
         if epoch % opt.save_freq == 0:
