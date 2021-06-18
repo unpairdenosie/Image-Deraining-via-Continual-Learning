@@ -45,13 +45,6 @@ def main():
         if not os.path.exists(savepath):
             os.makedirs(savepath)
 
-#    if opt.resume:
-#        if not os.path.exists(os.path.join(opt.checkpoints_dir, opt.prefix + 'Prenet_fcheck')):
-#            os.makedirs(os.path.join(opt.checkpoints_dir, opt.prefix + 'Prenet_fcheck'))
-#        writer = SummaryWriter(os.path.join(opt.checkpoints_dir, opt.prefix + 'Prenet_fcheck'))
-#        dataset_test = Dataset(data_path="/gdata/xiaojie/Prenet_Dataset/train/RainTrainH", prefix=opt.prefix)
-#        loader_test = DataLoader(dataset=dataset_test, num_workers=1, batch_size=opt.batch_size, shuffle=False)
-
     print('Loading dataset ...\n')
     dataset_train = Dataset(data_path=opt.data_path)
     loader_train = DataLoader(dataset=dataset_train, num_workers=2, batch_size=opt.batch_size, shuffle=True)
@@ -62,8 +55,6 @@ def main():
 
     print_network(model)
 
-    # loss function
-    # criterion = nn.MSELoss(size_average=False)
     criterion = SSIM()
 
     # Move to GPU
